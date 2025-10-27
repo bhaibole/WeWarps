@@ -1,0 +1,11 @@
+messages:
+  no-permission: "&cYou don't have permission to do that."
+  only-players: "&cOnly players can use that command."
+  warp-not-found: "&cWarp '&e{warp}&c' not found."
+  warp-created: "&aWarp '&e{warp}&a' created."
+  warp-deleted: "&aWarp '&e{warp}&a' deleted."
+  warp-teleport: "&aTeleporting to warp '&e{warp}&a'..."
+  warp-list-title: "&6Available Warps (&e{count}&6):"
+  warp-list-item: "&7- &e{warp} &f- &b{owner} &f- &d{description}"
+  warp-already-exists: "&cA warp named '&e{warp}&c' already exists."
+  invalid-usage: "&cUsage: {usage}"
