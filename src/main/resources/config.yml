@@ -1,0 +1,64 @@
+# ============================================================
+#  WeWarps v1.0.0 - Configuration File
+#  Author: dev_allenalt_tw
+#  Compatible: Paper/Spigot 1.20 – 1.21.9+
+# ============================================================
+
+# -----------------------------
+# General Plugin Settings
+# -----------------------------
+plugin:
+  version: 1.0.0
+  debug: false                # Enables extra console logs for troubleshooting
+
+# -----------------------------
+# Teleport Settings
+# -----------------------------
+teleport:
+  async: true                 # Use Paper's teleportAsync() if available
+  delay-seconds: 0            # Delay before teleport (0 = instant)
+  cancel-on-move: false       # Cancel teleport if player moves before it completes
+  sound:
+    enabled: true
+    name: "ENTITY_ENDERMAN_TELEPORT"
+    volume: 1.0
+    pitch: 1.0
+
+# -----------------------------
+# Warp Management
+# -----------------------------
+warps:
+  save-immediately: true      # Save to warps.yml instantly after changes (recommended)
+  auto-load: true             # Load warps automatically on startup
+  case-sensitive: false       # Warp names are not case-sensitive
+
+# -----------------------------
+# Permissions Defaults
+# -----------------------------
+permissions:
+  use-default: true           # Allow /warp and /warps for all players
+  admin-default-op: true      # Restrict admin commands to operators by default
+
+# -----------------------------
+# Display and Message Settings
+# -----------------------------
+display:
+  use-color-codes: true
+  list-format:
+    title: "&6Available Warps (&e{count}&6):"
+    item: "&7- &e{warp} &f- &b{owner} &f- &d{description}"
+
+# -----------------------------
+# Logging Settings
+# -----------------------------
+logging:
+  creation: true              # Log warp creation in console
+  deletion: true              # Log warp deletion in console
+  teleport: false             # Log player teleports in console
+
+# -----------------------------
+# Data Files
+# -----------------------------
+files:
+  messages: "messages.yml"
+  warps: "warps.yml"
