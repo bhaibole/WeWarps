@@ -6,79 +6,78 @@ import dev.allenalt.wewarps.WeWarps;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 
 /**
- * Teleports player to warp: /warp <name>
+ * Handles /warp <name> command.
  */
 public class WarpCommand implements CommandExecutor {
 
     private final WarpManager manager;
-    private final FileConfiguration messages;
+    private final File messagesFile;
 
     public WarpCommand(WarpManager manager) {
         this.manager = manager;
-        this.messages = WeWarps.getInstance().getConfig(); // not used; we read messages.yml directly below
+        this.messagesFile = new File(WeWarps.getInstance().getDataFolder(), "messages.yml");
     }
 
-    private String msg(String key) {
-        return WeWarps.getInstance().getResourceBundle() == null ? "" : "";
+    private String msg(String path, String def) {
+        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(messagesFile);
+        return cfg.getString(path, def).replace("&", "§");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Read messages.yml manually
-        FileConfiguration cfg = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
-                new java.io.File(WeWarps.getInstance().getDataFolder(), "messages.yml")
-        );
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(cfg.getString("messages.only-players", "&cOnly players can use that command.").replace("&", "§"));
+            sender.sendMessage(msg("messages.only-players", "&cOnly players can use that command."));
             return true;
         }
 
         Player player = (Player) sender;
 
         if (!player.hasPermission("wewarps.use")) {
-            player.sendMessage(cfg.getString("messages.no-permission", "&cYou don't have permission to do that.").replace("&", "§"));
+            player.sendMessage(msg("messages.no-permission", "&cYou don't have permission to do that."));
             return true;
         }
 
         if (args.length != 1) {
-            player.sendMessage(cfg.getString("messages.invalid-usage", "&cUsage: {usage}")
-                    .replace("{usage}", "/warp <name>").replace("&", "§"));
+            player.sendMessage(msg("messages.invalid-usage", "&cUsage: {usage}")
+                    .replace("{usage}", "/warp <name>"));
             return true;
         }
 
         String name = args[0].toLowerCase();
         Optional<Warp> opt = manager.getWarp(name);
+
         if (!opt.isPresent()) {
-            player.sendMessage(cfg.getString("messages.warp-not-found", "&cWarp '{warp}' not found.")
-                    .replace("{warp}", name).replace("&", "§"));
+            player.sendMessage(msg("messages.warp-not-found", "&cWarp '{warp}' not found.")
+                    .replace("{warp}", name));
             return true;
         }
 
         Warp warp = opt.get();
-        player.sendMessage(cfg.getString("messages.warp-teleport", "&aTeleporting to warp '{warp}'...")
-                .replace("{warp}", warp.getName()).replace("&", "§"));
 
-        // Use modern Paper teleport API: teleportAsync
+        player.sendMessage(msg("messages.warp-teleport", "&aTeleporting to warp '{warp}'...")
+                .replace("{warp}", warp.getName()));
+
+        // Use modern Paper API teleport
         try {
             player.teleportAsync(warp.getLocation())
-                .thenRun(() -> {
-                    // Success — nothing to do, but could send a confirmation or play a sound
-                })
-                .exceptionally(ex -> {
-                    player.sendMessage("§cTeleport failed: " + ex.getMessage());
-                    WeWarps.getInstance().getLogger().warning("Teleport exception for player " + player.getName() + " to warp " + warp.getName() + ": " + ex.getMessage());
-                    return null;
-                });
+                    .thenRun(() -> { /* success */ })
+                    .exceptionally(ex -> {
+                        player.sendMessage("§cTeleport failed: " + ex.getMessage());
+                        WeWarps.getInstance().getLogger().warning("Teleport error for player "
+                                + player.getName() + " to warp " + warp.getName() + ": " + ex.getMessage());
+                        return null;
+                    });
         } catch (NoSuchMethodError | CompletionException ex) {
-            // In case older API, fallback
+            // Fallback if Paper async teleport isn't available
             player.teleport(warp.getLocation());
         }
 
