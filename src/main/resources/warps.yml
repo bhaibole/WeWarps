@@ -1,0 +1,21 @@
+# warps.yml - do not manually edit unless you know what you're doing
+# Each warp entry:
+# name:
+#   world: world
+#   x: 0.0
+#   y: 64.0
+#   z: 0.0
+#   yaw: 0.0
+#   pitch: 0.0
+#   owner: console
+#   description: Default warp
+
+example:
+  world: world
+  x: 0.5
+  y: 64.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+  owner: server
+  description: "Example warp"
