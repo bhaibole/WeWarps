@@ -1,0 +1,37 @@
+name: WeWarps
+main: dev.allenalt.wewarps.WeWarps
+version: 1.0.0
+api-version: 1.20
+description: Professional warp management plugin.
+authors:
+  - dev_allenalt_tw
+commands:
+  warp:
+    description: Teleport to a warp.
+    usage: /warp <name>
+    permission: wewarps.use
+    permission-message: >-
+      &cYou don't have permission to use warps.
+  setwarp:
+    description: Create a warp at your current location.
+    usage: /setwarp <name>
+    permission: wewarps.admin
+    permission-message: >-
+      &cYou don't have permission to create warps.
+  delwarp:
+    description: Delete a warp.
+    usage: /delwarp <name>
+    permission: wewarps.admin
+    permission-message: >-
+      &cYou don't have permission to delete warps.
+  warps:
+    description: List available warps.
+    usage: /warps
+    permission: wewarps.use
+permissions:
+  wewarps.use:
+    description: Use /warp and /warps
+    default: true
+  wewarps.admin:
+    description: Admin actions for warps (/setwarp, /delwarp)
+    default: op
